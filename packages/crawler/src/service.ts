@@ -5,7 +5,7 @@ import { LinkExtractor } from './extractor.js';
 import { RuleEngine } from './filter.js';
 import { RobotsManager } from './robots.js';
 import { CrawlerState } from './state.js';
-import { crawlQueue, saveJobResult } from '@crawwl/core';
+import { crawlQueue, saveJobResult, logger } from '@crawwl/core';
 
 export class CrawlerService {
   private scraperRunner: ScraperRunner;
@@ -33,12 +33,15 @@ export class CrawlerService {
 
     // 3. Mark as visited
     await CrawlerState.markVisited(crawlId, url);
+    logger.info(`Marked ${url} as visited. Starting scrape...`);
 
     // 4. Scrape the content
     const result = await this.scraperRunner.run(options);
+    logger.info(`Scrape finished for ${url}. Success: ${result.success}`);
     
     // 5. Save individual page result
     await saveJobResult(`${crawlId}:${url}`, result);
+    logger.info(`Saved result for ${url}`);
 
     // 6. Discover and Queue new links if depth allows
     if (depth < options.maxDepth && result.success && result.html) {

@@ -1,20 +1,10 @@
 import dotenv from 'dotenv';
 import { Worker, Job } from 'bullmq';
-import { SCRAPE_QUEUE_NAME, CRAWL_QUEUE_NAME, redisConnection, saveJobResult } from '@crawwl/core';
+import { SCRAPE_QUEUE_NAME, CRAWL_QUEUE_NAME, redisConnection, saveJobResult, logger } from '@crawwl/core';
 import { ScraperRunner, ScrapeOptions } from '@crawwl/scraper';
 import { CrawlerService, CrawlJobData } from '@crawwl/crawler';
-import winston from 'winston';
 
 dotenv.config();
-
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
-  transports: [new winston.transports.Console()],
-});
 
 const scraperRunner = new ScraperRunner();
 const crawlerService = new CrawlerService();

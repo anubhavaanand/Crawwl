@@ -2,6 +2,7 @@
   "name": "@crawwl/core",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,7 +10,8 @@
   },
   "dependencies": {
     "bullmq": "^5.7.0",
-    "ioredis": "^5.4.1"
+    "ioredis": "^5.4.1",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "typescript": "^5.4.5"

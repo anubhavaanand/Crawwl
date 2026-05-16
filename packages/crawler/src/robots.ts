@@ -1,6 +1,6 @@
 import robotsParser from 'robots-parser';
 import axios from 'axios';
-import { logger } from '@crawwl/core'; // Assuming core has logger or we can use a local one
+import { logger } from '@crawwl/core';
 
 export class RobotsManager {
   private cache: Map<string, any> = new Map();

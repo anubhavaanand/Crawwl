@@ -1,6 +1,7 @@
 {
   "name": "crawwl-monorepo",
   "private": true,
+  "type": "module",
   "description": "Production-ready scraper and crawler for AI agents.",
   "scripts": {
     "build": "pnpm -r build",
@@ -11,8 +12,13 @@
   },
   "packageManager": "pnpm@9.0.0",
   "devDependencies": {
-    "typescript": "^5.4.5",
+    "eslint": "^8.57.0",
     "prettier": "^3.2.5",
-    "eslint": "^8.57.0"
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "ioredis": "^5.4.1",
+    "tsx": "^4.7.2"
   }
 }

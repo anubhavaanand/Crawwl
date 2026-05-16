@@ -1,16 +1,15 @@
 import { Router } from 'express';
 import { ScrapeOptionsSchema } from '@crawwl/scraper';
 import { CrawlOptionsSchema } from '@crawwl/crawler';
-import { scrapeQueue, crawlQueue, getJobResult } from '@crawwl/core';
-import { logger } from '../lib/logger.js';
-import { v7 as uuidv7 } from 'uuid';
+import { scrapeQueue, crawlQueue, getJobResult, logger } from '@crawwl/core';
+import { v4 as uuidv4 } from 'uuid';
 
 export const v1Router = Router();
 
 v1Router.post('/scrape', async (req, res) => {
   try {
     const options = ScrapeOptionsSchema.parse(req.body);
-    const jobId = uuidv7();
+    const jobId = uuidv4();
     
     logger.info(`Adding scrape job ${jobId} for ${options.url}`);
     
@@ -46,7 +45,7 @@ v1Router.get('/jobs/:jobId', async (req, res) => {
 v1Router.post('/crawl', async (req, res) => {
   try {
     const options = CrawlOptionsSchema.parse(req.body);
-    const crawlId = uuidv7();
+    const crawlId = uuidv4();
     
     logger.info(`Starting crawl ${crawlId} for ${options.url}`);
     
@@ -56,7 +55,7 @@ v1Router.post('/crawl', async (req, res) => {
       depth: 0,
       crawlId,
       options
-    }, { jobId: `${crawlId}:seed` });
+    }, { jobId: `${crawlId}-seed` });
 
     res.status(202).json({ 
       success: true, 

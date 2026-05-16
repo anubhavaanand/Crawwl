@@ -1,0 +1,2 @@
+{"level":"info","message":"Crawwl Workers started and listening for scrape/crawl jobs...","timestamp":"2026-05-16T23:25:59.676Z"}
+{"level":"info","message":"Processing crawl job e2e05258-699f-4468-bd34-9a08dea087a9-seed for http://localhost:4000/ (Depth: 0)","timestamp":"2026-05-16T23:26:11.211Z"}

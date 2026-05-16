@@ -1,0 +1,3 @@
+{"level":"info","message":"Crawwl API listening at http://localhost:3000","timestamp":"2026-05-16T23:25:59.772Z"}
+{"level":"info","message":"Starting crawl e2e05258-699f-4468-bd34-9a08dea087a9 for http://localhost:4000/","timestamp":"2026-05-16T23:26:11.203Z"}
+::1 - - [16/May/2026:23:26:11 +0000] "POST /v1/crawl HTTP/1.1" 202 91 "-" "curl/8.20.0"
