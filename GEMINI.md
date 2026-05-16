@@ -31,3 +31,8 @@ Crawwl is a high-performance web scraping and crawling platform designed for AI 
 3. **Phase 3: Queue & Worker:** Set up BullMQ for job management.
 4. **Phase 4: Transformation & AI:** Markdown conversion and structured extraction.
 5. **Phase 5: Performance & Anti-bot:** Advanced retry logic and proxy rotation.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->

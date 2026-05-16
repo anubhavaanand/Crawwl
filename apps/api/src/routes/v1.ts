@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ScrapeOptionsSchema } from '@crawwl/scraper';
-import { scrapeQueue, getJobResult } from '@crawwl/core';
+import { CrawlOptionsSchema } from '@crawwl/crawler';
+import { scrapeQueue, crawlQueue, getJobResult } from '@crawwl/core';
 import { logger } from '../lib/logger.js';
 import { v7 as uuidv7 } from 'uuid';
 
@@ -43,10 +44,27 @@ v1Router.get('/jobs/:jobId', async (req, res) => {
 });
 
 v1Router.post('/crawl', async (req, res) => {
-  // Skeleton for crawl
-  res.status(202).json({ 
-    success: true, 
-    message: 'Crawl job received',
-    jobId: 'placeholder-uuid' 
-  });
+  try {
+    const options = CrawlOptionsSchema.parse(req.body);
+    const crawlId = uuidv7();
+    
+    logger.info(`Starting crawl ${crawlId} for ${options.url}`);
+    
+    // Add the seed URL to the crawl queue
+    await crawlQueue.add('crawl', {
+      url: options.url,
+      depth: 0,
+      crawlId,
+      options
+    }, { jobId: `${crawlId}:seed` });
+
+    res.status(202).json({ 
+      success: true, 
+      message: 'Crawl started',
+      crawlId 
+    });
+  } catch (error: any) {
+    logger.error(`Error starting crawl: ${error.message}`);
+    res.status(400).json({ success: false, error: error.errors || error.message });
+  }
 });

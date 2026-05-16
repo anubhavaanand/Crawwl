@@ -11,6 +11,7 @@
   "dependencies": {
     "@crawwl/core": "workspace:*",
     "@crawwl/scraper": "workspace:*",
+    "@crawwl/crawler": "workspace:*",
     "express": "^4.19.2",
     "uuid": "^9.0.1",
     "zod": "^3.23.8",

@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import { Worker, Job } from 'bullmq';
-import { SCRAPE_QUEUE_NAME, redisConnection, saveJobResult } from '@crawwl/core';
+import { SCRAPE_QUEUE_NAME, CRAWL_QUEUE_NAME, redisConnection, saveJobResult } from '@crawwl/core';
 import { ScraperRunner, ScrapeOptions } from '@crawwl/scraper';
+import { CrawlerService, CrawlJobData } from '@crawwl/crawler';
 import winston from 'winston';
 
 dotenv.config();
@@ -16,42 +17,54 @@ const logger = winston.createLogger({
 });
 
 const scraperRunner = new ScraperRunner();
+const crawlerService = new CrawlerService();
 
-const worker = new Worker(
+// Scrape Worker
+const scrapeWorker = new Worker(
   SCRAPE_QUEUE_NAME,
   async (job: Job<ScrapeOptions>) => {
-    logger.info(`Processing job ${job.id} for ${job.data.url}`);
+    logger.info(`Processing scrape job ${job.id} for ${job.data.url}`);
     
     try {
       const result = await scraperRunner.run(job.data);
-      
-      // Save result to Redis for retrieval
       await saveJobResult(job.id!, result);
 
       if (result.success) {
-        logger.info(`Job ${job.id} succeeded`);
+        logger.info(`Scrape job ${job.id} succeeded`);
         return result;
       } else {
-        logger.error(`Job ${job.id} failed: ${result.error}`);
+        logger.error(`Scrape job ${job.id} failed: ${result.error}`);
         throw new Error(result.error || 'Scrape failed');
       }
     } catch (error: any) {
-      logger.error(`Error processing job ${job.id}: ${error.message}`);
+      logger.error(`Error processing scrape job ${job.id}: ${error.message}`);
       throw error;
     }
   },
   {
     connection: redisConnection,
-    concurrency: parseInt(process.env.WORKER_CONCURRENCY || '5'),
+    concurrency: parseInt(process.env.SCRAPE_CONCURRENCY || '5'),
   }
 );
 
-worker.on('completed', (job) => {
-  logger.info(`Job ${job.id} completed successfully`);
-});
+// Crawl Worker
+const crawlWorker = new Worker(
+  CRAWL_QUEUE_NAME,
+  async (job: Job<CrawlJobData>) => {
+    logger.info(`Processing crawl job ${job.id} for ${job.data.url} (Depth: ${job.data.depth})`);
+    
+    try {
+      await crawlerService.processJob(job);
+      logger.info(`Crawl job ${job.id} completed`);
+    } catch (error: any) {
+      logger.error(`Error processing crawl job ${job.id}: ${error.message}`);
+      throw error;
+    }
+  },
+  {
+    connection: redisConnection,
+    concurrency: parseInt(process.env.CRAWL_CONCURRENCY || '2'),
+  }
+);
 
-worker.on('failed', (job, err) => {
-  logger.error(`Job ${job?.id} failed with error: ${err.message}`);
-});
-
-logger.info('Crawwl Worker started and listening for jobs...');
+logger.info('Crawwl Workers started and listening for scrape/crawl jobs...');

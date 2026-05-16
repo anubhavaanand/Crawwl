@@ -11,6 +11,7 @@
   "dependencies": {
     "@crawwl/core": "workspace:*",
     "@crawwl/scraper": "workspace:*",
+    "@crawwl/crawler": "workspace:*",
     "bullmq": "^5.7.0",
     "dotenv": "^16.4.5",
     "winston": "^3.13.0"

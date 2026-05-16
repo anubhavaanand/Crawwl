@@ -22,3 +22,16 @@ export const scrapeQueue = new Queue(SCRAPE_QUEUE_NAME, {
     removeOnFail: 1000,
   },
 });
+
+export const crawlQueue = new Queue(CRAWL_QUEUE_NAME, {
+  connection: redisConnection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 1000,
+    },
+    removeOnComplete: true,
+    removeOnFail: 1000,
+  },
+});
